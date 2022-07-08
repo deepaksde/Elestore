@@ -8,7 +8,7 @@ export interface Props {
 
 const ProductList = ({ products }: Props) => {
   return (
-    <Grid container spacing={4} justifyContent='center' pt={4}>
+    <Grid container spacing={4} justifyContent='center'>
       {products.map((product) => (
         <Grid item key={product.id} xs={3}>
           <ProductCard product={product} />
