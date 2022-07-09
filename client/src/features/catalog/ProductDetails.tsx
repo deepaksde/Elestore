@@ -8,36 +8,39 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import agents from '../../app/api/agents';
+import Loading from '../../app/layouts/Loading';
 import { Product } from '../../app/models/product';
+import PageNotFound from '../pageNotFound/pageNotFound';
+
+const imgStyle = {
+  width: '100%',
+};
 
 export default function ProductDetails() {
-  const { id } = useParams<{ id: string }>();
+  const urlParam = useParams();
+  const id = urlParam.id!;
+  // let { id } = useParams<{ id: string }>().id!;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/Products/${id}`)
-      .then((response) => setProduct(response.data))
+    agents.Catalog.details(parseInt(id))
+      .then((response) => setProduct(response))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
-  });
+  }, [id]);
 
-  if (loading) return <h3>Loading...</h3>;
+  if (loading) return <Loading />;
 
-  if (!product) return <h3>Product Not Found</h3>;
+  if (!product) return <PageNotFound />;
 
   return (
     <Grid container spacing={6}>
       <Grid item xs={6}>
-        <img
-          src={product.pictureUrl}
-          alt={product.name}
-          style={{ width: '100%' }}
-        />
+        <img src={product.pictureUrl} alt={product.name} style={imgStyle} />
       </Grid>
       <Grid item xs={6}>
         <Typography variant='h3' sx={{ fontWeight: '400' }}>
